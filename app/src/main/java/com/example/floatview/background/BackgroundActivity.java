@@ -31,8 +31,8 @@ public class BackgroundActivity extends AppCompatActivity {
         super.onRestart();
         Utils.log("BackgroundActivity onRestart");
     }
-
     @Override
+
     protected void onStop() {
         super.onStop();
         Utils.log("BackgroundActivity onStop");

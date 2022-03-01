@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.floatview.drag.DragScaleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dsly_test"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rlyt_drag"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:background="#ff00ff00">
+
+<!--        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:src="@drawable/ic_launcher" 
+            android:focusable="false"/>-->
+
+    </RelativeLayout>
+</com.example.floatview.drag.DragScaleLayout>

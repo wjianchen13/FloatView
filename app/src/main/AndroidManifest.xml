@@ -19,6 +19,9 @@
         <activity android:name=".background.BackgroundActivity"
             android:launchMode="singleTask"/>
         <activity android:name=".floatwindow.FloatActivity" />
+        <activity android:name=".drag.ScaleActivity" />
+        <activity android:name=".gesture.GestureActivity" />
+        <activity android:name=".drag.DragScaleActivity" />
         
     </application>
 

@@ -29,6 +29,43 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_background" />
+
+    <Button
+        android:id="@+id/btn_drag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="缩放拖拽测试"
+        android:textAllCaps="false"
+        android:onClick="onDrag"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_float" />
+
+    <Button
+        android:id="@+id/btn_gesture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="手势检测"
+        android:textAllCaps="false"
+        android:onClick="onGesture"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_drag" />
+
+
+    <Button
+        android:id="@+id/btn_drag_scale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="拖动缩放布局"
+        android:textAllCaps="false"
+        android:onClick="onDragScale"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gesture" />
      
 
 </androidx.constraintlayout.widget.ConstraintLayout>
