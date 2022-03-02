@@ -2,28 +2,41 @@ package com.example.floatview.drag;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.customview.widget.ViewDragHelper;
 
 import com.example.floatview.R;
 import com.example.floatview.utils.Utils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
- * LineChatlayout 主要处理视频窗口拖动
+ * DragScaleLayout 主要处理视频窗口拖动
  */
-public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetector.OnScaleGestureListener{
+public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector.OnScaleGestureListener{
 
     private static final int MAX_WIDTH = 720;
     private static final float MAX_HEIGHT = 1440;
-    
+
+    public static final int TYPE_NULL = 0;
+    public static final int TYPE_DRAG = 1;
+    public static final int TYPE_SCALE = 2;
+
+    @IntDef({TYPE_NULL, TYPE_DRAG, TYPE_SCALE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
+
+    }
+
+    private @Type int mType;
     
     private ViewDragHelper mViewDragHelper;
     private ScaleGestureDetector mScaleDetector;
@@ -41,8 +54,11 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
     /**
      * 开始缩放尺寸
      */
-    private int mStartWidht;
+    private int mStartWidth;
     private int mStartHeight;
+
+    private int mStartLeft;
+    private int mStartTop;
     
     private int mLeft;
     private int mTop;
@@ -52,7 +68,7 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
     public DragScaleLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DragScaleLayout);
-
+        mType = TYPE_NULL;
         mOrgWidth = a.getInt(R.styleable.DragScaleLayout_android_layout_width, 240);
         mOrgHeight = a.getInt(R.styleable.DragScaleLayout_android_layout_height, 480);
         a.recycle();
@@ -65,12 +81,12 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
     }
 
     public void setVideoview(View view){
-        log("setVideoview execute:" + view);
+        Utils.log("setVideoview execute:" + view);
         mVideoView = view;
         if (mVideoView != null) {
             mLeft = mVideoView.getLeft();
             mTop = mVideoView.getTop();
-            log("setVideoview mVideoView is not null");
+            Utils.log("setVideoview mVideoView is not null");
         }
     }
     
@@ -85,7 +101,7 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
         mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
             @Override
             public boolean tryCaptureView(View child, int pointerId) { // 返回ture则表示可以捕获该view，你可以根据传入的第一个view参数决定哪些可以捕获
-                return child == mVideoView && child.getVisibility() == VISIBLE;
+                return mType == TYPE_DRAG ? child == mVideoView && child.getVisibility() == VISIBLE : false;
             }
 
             @Override
@@ -120,11 +136,14 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
 
             @Override
             public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) { // 当captureview的位置发生改变时回调
-                mLeft = left;
-                mTop = top;
-                isChange = true;
-                log("onViewPositionChanged");
-                invalidate();
+                Utils.log("onViewPositionChanged mType: " + mType);
+                if(mType == TYPE_DRAG) {
+                    mLeft = left;
+                    mTop = top;
+                    isChange = true;
+                    Utils.log("onViewPositionChanged");
+                    invalidate();
+                }
             }
 
             @Override
@@ -138,25 +157,37 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
         });
     }
 
-    private void log(String msg){
-        if (TextUtils.isEmpty(msg))
-            return;
-        StringBuilder sb = new StringBuilder(msg);
-        sb.append(",mLeft=").append(mLeft);
-        sb.append(",mTop=").append(mTop);
-        if (mVideoView != null){
-            sb.append(",org:left=").append(mVideoView.getLeft());
-            sb.append(",org:top=").append(mVideoView.getTop());
-            sb.append(",org:right=").append(mVideoView.getRight());
-            sb.append(",org:bottom=").append(mVideoView.getBottom());
-        } else {
-            sb.append(",mVideoView is null");
-        }
-        Log.d("reset_video_exchanged", sb.toString());
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        int currentX = (int) event.getX();
+        int currentY = (int) event.getY();
+        Utils.log("onInterceptTouchEvent action： " + action);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                Utils.log("ACTION_DOWN");
+                mType = TYPE_DRAG;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                Utils.log("ACTION_POINTER_DOWN count: " + event.getPointerCount());
+                if(event.getPointerCount() >= 2) {
+                    mType = TYPE_SCALE;   
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Utils.log("ACTION_MOVE count: " + event.getPointerCount());
+//                if (Math.abs(mDistansX - currentX) >= mTouchSlop || Math.abs(mDistansY - currentY) >= mTouchSlop) { //父容器拦截
+//                    return true;
+//                }
+                break;
+            //指点杆保持按下，并且进行位移
+            //有手指抬起，将模式设为NONE
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                Utils.log("ACTION_UP count: " + event.getPointerCount());
+                mType = TYPE_NULL;
+                break;
+        }
         if(mViewDragHelper != null) {
             return mViewDragHelper.shouldInterceptTouchEvent(event);
         } 
@@ -165,9 +196,33 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(mViewDragHelper != null)
+        int action = event.getActionMasked();
+        Utils.log("onTouchEvent action： " + action);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                Utils.log("onTouchEvent ACTION_DOWN");
+                mType = TYPE_DRAG;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                Utils.log("onTouchEvent ACTION_POINTER_DOWN count: " + event.getPointerCount());
+                if(event.getPointerCount() >= 2) {
+                    mType = TYPE_SCALE;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Utils.log("onTouchEvent ACTION_MOVE count: " + event.getPointerCount());
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                Utils.log("onTouchEvent ACTION_UP count: " + event.getPointerCount());
+                mType = TYPE_NULL;
+                break;
+        }
+        
+        if(mViewDragHelper != null && mType == TYPE_DRAG)
             mViewDragHelper.processTouchEvent(event);
-        if(mScaleDetector != null) {
+        if(mScaleDetector != null && mType == TYPE_SCALE) {
             mScaleDetector.onTouchEvent(event);
         }
         return true;
@@ -188,6 +243,8 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
             int childTop = mTop;
             Utils.log("onLayout");
             mVideoView.layout(childLeft, childTop, childLeft + mVideoView.getMeasuredWidth(), childTop + mVideoView.getMeasuredHeight());
+            mStartLeft = mLeft;
+            mStartTop = mTop;
         }
     }
 
@@ -206,31 +263,40 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
 
     public void applyScale(float scale) {
         if(mVideoView != null) {
-            int nW = (int) (mStartWidht * scale);
+            int nW = (int) (mStartWidth * scale);
             int nH = (int) (mStartHeight * scale);
             Utils.log("mOrgWidth: " + mOrgWidth + "  mOrgHeight: " + mOrgHeight);
-            Utils.log("scale: " + scale + "  mStartWidht: " + mStartWidht + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
+            Utils.log("scale: " + scale + "  mStartWidht: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
             if(nW >= mOrgWidth && nW <= MAX_WIDTH
                 && nH >= mOrgHeight && nH <= MAX_HEIGHT) {
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mVideoView.getLayoutParams();
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
                 if(params != null) {
                     params.width = nW;
                     params.height = nH;
                     mVideoView.setLayoutParams(params);
+                    mLeft = mStartLeft - (nW - mStartWidth);
+                    mTop = mStartTop - (nH - mStartHeight);
+                    invalidate();
                 }
             }
         }
     }
+    
+    private void reLayout() {
+        
+    }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        Utils.log("onScaleBegin: ");
+        mType = TYPE_SCALE;
         if (mVideoView == null) {
             mVideoView = getChildAt(0);
         }
-        mStartWidht = mVideoView.getWidth();
+        mStartWidth = mVideoView.getWidth();
         mStartHeight = mVideoView.getHeight();
-//        mLeft = mVideoView.getLeft();
-//        mTop = mVideoView.getTop();
+        mStartLeft = mVideoView.getLeft();
+        mStartTop = mVideoView.getTop();
 //        mRight = mVideoView.getRight();
 //        mBottom = mVideoView.getBottom();
         return true;
@@ -238,6 +304,7 @@ public class DragScaleLayout extends RelativeLayout implements ScaleGestureDetec
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-
+        Utils.log("onScaleEnd: ");
+        mType = TYPE_NULL;
     }
 }
