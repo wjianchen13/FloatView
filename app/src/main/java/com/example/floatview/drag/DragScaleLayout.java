@@ -136,12 +136,16 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
 
             @Override
             public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) { // 当captureview的位置发生改变时回调
-                Utils.log("onViewPositionChanged mType: " + mType);
+                Utils.log("onViewPositionChanged mType: " + mType + "  left: " + left + "  top: " + top);
+                mStartLeft = left;
+                mStartTop = top;
+                mLeft = left;
+                mTop = top;
                 if(mType == TYPE_DRAG) {
-                    mLeft = left;
-                    mTop = top;
+
                     isChange = true;
                     Utils.log("onViewPositionChanged");
+                    Utils.log("onViewPositionChanged mLeft: " + mLeft + "  mTop: " + mTop);
                     invalidate();
                 }
             }
@@ -265,7 +269,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         float scaleFactor = detector.getScaleFactor();
-        Utils.log("scaleFactor: " + scaleFactor);
+//        Utils.log("scaleFactor: " + scaleFactor);
         applyScale(scaleFactor);
         return false;
     }
@@ -279,7 +283,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         if(mVideoView != null) {
             int nW = (int) (mStartWidth * scale);
             int nH = (int) (mStartHeight * scale);
-            Utils.log("scale: " + scale + "  mStartWidth: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
+//            Utils.log("scale: " + scale + "  mStartWidth: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
             if(nW >= mOrgWidth && nW <= MAX_WIDTH
                 && nH >= mOrgHeight && nH <= MAX_HEIGHT) {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
@@ -287,10 +291,10 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
                     params.width = nW;
                     params.height = nH;
                     mVideoView.setLayoutParams(params);
-                    mLeft = mStartLeft - (nW - mStartWidth) / 2;
-                    mTop = mStartTop - (nH - mStartHeight) / 2;
-                    Utils.log("applyScale mLeft: " + mLeft + "  mTop: " + mTop);
-                    mVideoView.layout(mLeft, mTop, mLeft + mVideoView.getWidth(), mTop + mVideoView.getHeight());
+                    int left = mStartLeft - (nW - mStartWidth) / 2;
+                    int top = mStartTop - (nH - mStartHeight) / 2;
+                    Utils.log("applyScale mStartLeft: " + mStartLeft + "  mStartTop: " + mStartTop + "  left: " + left + "  top: " + top);
+                    mVideoView.layout(left, top, left + mVideoView.getWidth(), top + mVideoView.getHeight());
                 }
             }
         }
