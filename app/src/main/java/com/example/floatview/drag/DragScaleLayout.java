@@ -255,7 +255,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if(mVideoView != null && isChange && mViewDragHelper != null) {
+        if(mVideoView != null && isChange) {
             int childLeft = mLeft;
             int childTop = mTop;
             Utils.log("onLayout mLeft: " + mLeft + "  mTop: " + mTop);
@@ -289,8 +289,13 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
                     params.height = nH;
                     mVideoView.setLayoutParams(params);
                     mLeft = mStartLeft - (nW - mStartWidth) / 2;
-                    mTop = mStartTop - (nH - mStartHeight) / 2;
                     Utils.log("applyScale mLeft: " + mLeft + "  mTop: " + mTop);
+                    mLeft = mLeft < 0 ? 0 : mLeft;
+                    mLeft = mLeft > getWidth() - mVideoView.getWidth() ? getWidth() - mVideoView.getWidth() : mLeft;
+                    mTop = mStartTop - (nH - mStartHeight) / 2;
+                    mTop = mTop < 0 ? 0 : mTop;
+                    mTop = mTop > getHeight() - mVideoView.getHeight() ? getHeight() - mVideoView.getHeight() : mTop;
+                    Utils.log("applyScale mLeft: " + mLeft + "  mTop: " + mTop + "   getWidth() - mVideoView.getWidth(): " + (getWidth() - mVideoView.getWidth()));
                     mVideoView.layout(mLeft, mTop, mLeft + mVideoView.getWidth(), mTop + mVideoView.getHeight());
                 }
             }
