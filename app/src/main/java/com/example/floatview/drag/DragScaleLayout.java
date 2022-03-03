@@ -159,37 +159,39 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        int action = event.getActionMasked();
-        int currentX = (int) event.getX();
-        int currentY = (int) event.getY();
-        Utils.log("onInterceptTouchEvent action： " + action);
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                Utils.log("ACTION_DOWN");
-                mType = TYPE_DRAG;
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                Utils.log("ACTION_POINTER_DOWN count: " + event.getPointerCount());
-                if(event.getPointerCount() >= 2) {
-                    mType = TYPE_SCALE;   
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                Utils.log("ACTION_MOVE count: " + event.getPointerCount());
-//                if (Math.abs(mDistansX - currentX) >= mTouchSlop || Math.abs(mDistansY - currentY) >= mTouchSlop) { //父容器拦截
-//                    return true;
+//        int action = event.getActionMasked();
+//        int currentX = (int) event.getX();
+//        int currentY = (int) event.getY();
+//        Utils.log("onInterceptTouchEvent action： " + action);
+//        switch (action) {
+//            case MotionEvent.ACTION_DOWN:
+//                Utils.log("ACTION_DOWN");
+//                mType = TYPE_DRAG;
+//                break;
+//            case MotionEvent.ACTION_POINTER_DOWN:
+//                Utils.log("ACTION_POINTER_DOWN count: " + event.getPointerCount());
+//                if(event.getPointerCount() >= 2) {
+//                    mType = TYPE_SCALE;   
 //                }
-                break;
-            //指点杆保持按下，并且进行位移
-            //有手指抬起，将模式设为NONE
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                Utils.log("ACTION_UP count: " + event.getPointerCount());
-                mType = TYPE_NULL;
-                break;
-        }
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                Utils.log("ACTION_MOVE count: " + event.getPointerCount());
+////                if (Math.abs(mDistansX - currentX) >= mTouchSlop || Math.abs(mDistansY - currentY) >= mTouchSlop) { //父容器拦截
+////                    return true;
+////                }
+//                break;
+//            //指点杆保持按下，并且进行位移
+//            //有手指抬起，将模式设为NONE
+//            case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_POINTER_UP:
+//                Utils.log("ACTION_UP count: " + event.getPointerCount());
+//                mType = TYPE_NULL;
+//                break;
+//        }
         if(mViewDragHelper != null) {
-            return mViewDragHelper.shouldInterceptTouchEvent(event);
+            boolean isTouch = mViewDragHelper.shouldInterceptTouchEvent(event);
+            Utils.log("onInterceptTouchEvent isTouch： " + isTouch);
+            return isTouch;
         } 
         return super.onInterceptTouchEvent(event);
     }
@@ -200,27 +202,40 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         Utils.log("onTouchEvent action： " + action);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                Utils.log("onTouchEvent ACTION_DOWN");
+//                Utils.log("onTouchEvent ACTION_DOWN");
                 mType = TYPE_DRAG;
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                Utils.log("onTouchEvent ACTION_POINTER_DOWN count: " + event.getPointerCount());
+//                Utils.log("onTouchEvent ACTION_POINTER_DOWN count: " + event.getPointerCount() + "  mType: " + mType);
                 if(event.getPointerCount() >= 2) {
                     mType = TYPE_SCALE;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                Utils.log("onTouchEvent ACTION_MOVE count: " + event.getPointerCount());
+
+                if(event.getPointerCount() >= 2) { // 说明倒数第二个手指抬起
+                    mType = TYPE_SCALE;
+                } else {
+                    mType = TYPE_DRAG;
+                }
+//                Utils.log("onTouchEvent ACTION_MOVE count: " + event.getPointerCount() + "  mType: " + mType);
+                break;
+
+            case MotionEvent.ACTION_POINTER_UP: 
+//                Utils.log("onTouchEvent ACTION_POINTER_UP count: " + event.getPointerCount() + "  mType: " + mType);
+                if(event.getPointerCount() == 2) { // 说明倒数第二个手指抬起
+                    mType = TYPE_DRAG;
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                Utils.log("onTouchEvent ACTION_UP count: " + event.getPointerCount());
+//                Utils.log("onTouchEvent ACTION_UP count: " + event.getPointerCount() + "  mType: " + mType);
                 mType = TYPE_NULL;
                 break;
+
         }
         
-        if(mViewDragHelper != null && mType == TYPE_DRAG)
+        if(mViewDragHelper != null)
             mViewDragHelper.processTouchEvent(event);
         if(mScaleDetector != null && mType == TYPE_SCALE) {
             mScaleDetector.onTouchEvent(event);
@@ -231,6 +246,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
     @Override
     public void computeScroll() {
         if(mViewDragHelper != null && mViewDragHelper.continueSettling(true)) {
+            Utils.log("computeScroll " );
             invalidate();
         }
     }
@@ -241,10 +257,8 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         if(mVideoView != null && isChange && mViewDragHelper != null) {
             int childLeft = mLeft;
             int childTop = mTop;
-            Utils.log("onLayout");
+            Utils.log("onLayout mLeft: " + mLeft + "  mTop: " + mTop);
             mVideoView.layout(childLeft, childTop, childLeft + mVideoView.getMeasuredWidth(), childTop + mVideoView.getMeasuredHeight());
-            mStartLeft = mLeft;
-            mStartTop = mTop;
         }
     }
 
@@ -265,8 +279,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         if(mVideoView != null) {
             int nW = (int) (mStartWidth * scale);
             int nH = (int) (mStartHeight * scale);
-            Utils.log("mOrgWidth: " + mOrgWidth + "  mOrgHeight: " + mOrgHeight);
-            Utils.log("scale: " + scale + "  mStartWidht: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
+            Utils.log("scale: " + scale + "  mStartWidth: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
             if(nW >= mOrgWidth && nW <= MAX_WIDTH
                 && nH >= mOrgHeight && nH <= MAX_HEIGHT) {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
@@ -274,16 +287,13 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
                     params.width = nW;
                     params.height = nH;
                     mVideoView.setLayoutParams(params);
-                    mLeft = mStartLeft - (nW - mStartWidth);
-                    mTop = mStartTop - (nH - mStartHeight);
-                    invalidate();
+                    mLeft = mStartLeft - (nW - mStartWidth) / 2;
+                    mTop = mStartTop - (nH - mStartHeight) / 2;
+                    Utils.log("applyScale mLeft: " + mLeft + "  mTop: " + mTop);
+                    mVideoView.layout(mLeft, mTop, mLeft + mVideoView.getWidth(), mTop + mVideoView.getHeight());
                 }
             }
         }
-    }
-    
-    private void reLayout() {
-        
     }
 
     @Override
@@ -297,8 +307,6 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         mStartHeight = mVideoView.getHeight();
         mStartLeft = mVideoView.getLeft();
         mStartTop = mVideoView.getTop();
-//        mRight = mVideoView.getRight();
-//        mBottom = mVideoView.getBottom();
         return true;
     }
 

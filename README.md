@@ -32,8 +32,8 @@ https://blog.csdn.net/nizhuanxingheit/article/details/48716769
 Android ViewDragHelper完全解析 自定义ViewGroup神器
 https://blog.csdn.net/lmj623565791/article/details/46858663
 
-
-
+Android中悬浮小窗播放视频的实现方案(未验证)
+https://www.cnblogs.com/chitanta/p/9714436.html
 
 
 
