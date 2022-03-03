@@ -37,10 +37,10 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
     }
 
     private @Type int mType;
-    
+
     private ViewDragHelper mViewDragHelper;
     private ScaleGestureDetector mScaleDetector;
-    
+
     private View mVideoView;
 
     private boolean isChange;
@@ -59,7 +59,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
 
     private int mStartLeft;
     private int mStartTop;
-    
+
     private int mLeft;
     private int mTop;
     private int mRight;
@@ -89,7 +89,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
             Utils.log("setVideoview mVideoView is not null");
         }
     }
-    
+
     private void init(Context context) {
         mScaleDetector = new ScaleGestureDetector(context, this);
     }
@@ -136,16 +136,12 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
 
             @Override
             public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) { // 当captureview的位置发生改变时回调
-                Utils.log("onViewPositionChanged mType: " + mType + "  left: " + left + "  top: " + top);
-                mStartLeft = left;
-                mStartTop = top;
-                mLeft = left;
-                mTop = top;
+                Utils.log("onViewPositionChanged mType: " + mType);
                 if(mType == TYPE_DRAG) {
-
+                    mLeft = left;
+                    mTop = top;
                     isChange = true;
                     Utils.log("onViewPositionChanged");
-                    Utils.log("onViewPositionChanged mLeft: " + mLeft + "  mTop: " + mTop);
                     invalidate();
                 }
             }
@@ -196,7 +192,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
             boolean isTouch = mViewDragHelper.shouldInterceptTouchEvent(event);
             Utils.log("onInterceptTouchEvent isTouch： " + isTouch);
             return isTouch;
-        } 
+        }
         return super.onInterceptTouchEvent(event);
     }
 
@@ -208,6 +204,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
             case MotionEvent.ACTION_DOWN:
 //                Utils.log("onTouchEvent ACTION_DOWN");
                 mType = TYPE_DRAG;
+//                mViewDragHelper.processTouchEvent(event);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
 //                Utils.log("onTouchEvent ACTION_POINTER_DOWN count: " + event.getPointerCount() + "  mType: " + mType);
@@ -217,18 +214,18 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
                 break;
             case MotionEvent.ACTION_MOVE:
 
-                if(event.getPointerCount() >= 2) { // 说明倒数第二个手指抬起
-                    mType = TYPE_SCALE;
-                } else {
-                    mType = TYPE_DRAG;
-                }
+//                if(event.getPointerCount() >= 2) { // 说明倒数第二个手指抬起
+//                    mType = TYPE_SCALE;
+//                } else {
+//                    mType = TYPE_DRAG;
+//                }
 //                Utils.log("onTouchEvent ACTION_MOVE count: " + event.getPointerCount() + "  mType: " + mType);
                 break;
 
-            case MotionEvent.ACTION_POINTER_UP: 
+            case MotionEvent.ACTION_POINTER_UP:
 //                Utils.log("onTouchEvent ACTION_POINTER_UP count: " + event.getPointerCount() + "  mType: " + mType);
                 if(event.getPointerCount() == 2) { // 说明倒数第二个手指抬起
-                    mType = TYPE_DRAG;
+                    mType = TYPE_NULL;
                 }
                 break;
 
@@ -238,8 +235,8 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
                 break;
 
         }
-        
-        if(mViewDragHelper != null)
+
+        if(mViewDragHelper != null &&/* action != MotionEvent.ACTION_DOWN &&*/ mType == TYPE_DRAG)
             mViewDragHelper.processTouchEvent(event);
         if(mScaleDetector != null && mType == TYPE_SCALE) {
             mScaleDetector.onTouchEvent(event);
@@ -269,7 +266,7 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         float scaleFactor = detector.getScaleFactor();
-//        Utils.log("scaleFactor: " + scaleFactor);
+        Utils.log("scaleFactor: " + scaleFactor);
         applyScale(scaleFactor);
         return false;
     }
@@ -283,18 +280,18 @@ public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector
         if(mVideoView != null) {
             int nW = (int) (mStartWidth * scale);
             int nH = (int) (mStartHeight * scale);
-//            Utils.log("scale: " + scale + "  mStartWidth: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
+            Utils.log("scale: " + scale + "  mStartWidth: " + mStartWidth + "  mStartHeight: " + mStartHeight + "  nW: " + nW + "  nH: " + nH);
             if(nW >= mOrgWidth && nW <= MAX_WIDTH
-                && nH >= mOrgHeight && nH <= MAX_HEIGHT) {
+                    && nH >= mOrgHeight && nH <= MAX_HEIGHT) {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
                 if(params != null) {
                     params.width = nW;
                     params.height = nH;
                     mVideoView.setLayoutParams(params);
-                    int left = mStartLeft - (nW - mStartWidth) / 2;
-                    int top = mStartTop - (nH - mStartHeight) / 2;
-                    Utils.log("applyScale mStartLeft: " + mStartLeft + "  mStartTop: " + mStartTop + "  left: " + left + "  top: " + top);
-                    mVideoView.layout(left, top, left + mVideoView.getWidth(), top + mVideoView.getHeight());
+                    mLeft = mStartLeft - (nW - mStartWidth) / 2;
+                    mTop = mStartTop - (nH - mStartHeight) / 2;
+                    Utils.log("applyScale mLeft: " + mLeft + "  mTop: " + mTop);
+                    mVideoView.layout(mLeft, mTop, mLeft + mVideoView.getWidth(), mTop + mVideoView.getHeight());
                 }
             }
         }
