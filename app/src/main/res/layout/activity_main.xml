@@ -66,6 +66,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_gesture" />
+
+    <Button
+        android:id="@+id/btn_float_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="悬浮窗demo"
+        android:textAllCaps="false"
+        android:onClick="onFloatDialog"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_drag_scale" />
      
 
 </androidx.constraintlayout.widget.ConstraintLayout>

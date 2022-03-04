@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FloatView</string>
+    <string name="activity">打开Activity2</string>
 </resources>

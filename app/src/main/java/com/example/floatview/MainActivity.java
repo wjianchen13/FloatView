@@ -39,5 +39,8 @@ public class MainActivity extends AppCompatActivity {
     public void onDragScale(View v) {
         startActivity(new Intent(this, DragScaleActivity.class));
     }
-    
+
+    public void onFloatDialog(View v) {
+        startActivity(new Intent(this, jnidemo.hlq.com.remoteview.MainActivity.class));
+    }
 }
