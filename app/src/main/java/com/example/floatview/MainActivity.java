@@ -11,6 +11,8 @@ import com.example.floatview.drag.DragScaleActivity;
 import com.example.floatview.drag.ScaleActivity;
 import com.example.floatview.floatwindow.FloatActivity;
 import com.example.floatview.gesture.GestureActivity;
+import com.example.floatview.sharedelement.SharedElementActivity1;
+import com.example.floatview.singleinstance.SingleInstanceActivityA;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,4 +45,13 @@ public class MainActivity extends AppCompatActivity {
     public void onFloatDialog(View v) {
         startActivity(new Intent(this, jnidemo.hlq.com.remoteview.MainActivity.class));
     }
+
+    public void onSharedElement(View v) {
+        startActivity(new Intent(this, SharedElementActivity1.class));
+    }
+
+    public void onSingleInstance(View v) {
+        startActivity(new Intent(this, SingleInstanceActivityA.class));
+    }
+
 }

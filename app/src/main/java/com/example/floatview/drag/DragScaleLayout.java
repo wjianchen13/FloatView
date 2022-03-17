@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * DragScaleLayout 主要处理视频窗口拖动
+ * DragScaleLayout 主要处理视频窗口拖动 缩放，暂无自动靠边，收缩功能
  */
 public class DragScaleLayout extends FrameLayout implements ScaleGestureDetector.OnScaleGestureListener{
 

@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/DinoXAppTheme" >
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,13 +24,21 @@
         <activity android:name=".drag.ScaleActivity" />
         <activity android:name=".gesture.GestureActivity" />
         <activity android:name=".drag.DragScaleActivity" />
+        <activity android:name=".sharedelement.SharedElementActivity1" />
+        <activity android:name=".sharedelement.SharedElementActivity2" 
+            android:launchMode="singleInstance"/>
         
         <activity android:name="jnidemo.hlq.com.remoteview.MainActivity" />
         <activity android:name="jnidemo.hlq.com.remoteview.Main2Activity"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.TitleBar"/>
 
         <service android:name="jnidemo.hlq.com.remoteview.FloatWinfowServices" />
-        
+
+        <activity android:name=".singleinstance.SingleInstanceActivityA" />
+        <activity android:name=".singleinstance.SingleInstanceActivityB" />
+        <activity android:name=".singleinstance.SingleInstanceActivityC" />
+
     </application>
 
 </manifest>

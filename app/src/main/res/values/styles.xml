@@ -5,6 +5,27 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--允许启用窗口内容转换效果-->
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="Theme.TitleBar" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="DinoXAppTheme" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/DinoFastAnimation</item>
+<!--        <item name="android:windowBackground">#F9f9f9</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:editTextBackground">@android:color/white</item>-->
+    </style>
+
+    <style name="DinoFastAnimation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/dino_activity_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/dino_activity_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/dino_activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/dino_activity_close_exit</item>
     </style>
 
 </resources>
