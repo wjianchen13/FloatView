@@ -37,7 +37,9 @@
 
         <activity android:name=".singleinstance.SingleInstanceActivityA" />
         <activity android:name=".singleinstance.SingleInstanceActivityB" />
-        <activity android:name=".singleinstance.SingleInstanceActivityC" />
+        <activity android:name=".singleinstance.SingleInstanceActivityC"
+            android:launchMode="singleInstance"/>
+        <activity android:name=".singleinstance.SingleInstanceActivityD" />
 
     </application>
 

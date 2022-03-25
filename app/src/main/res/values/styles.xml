@@ -16,6 +16,8 @@
 
     <style name="DinoXAppTheme" parent="AppTheme">
         <item name="android:windowAnimationStyle">@style/DinoFastAnimation</item>
+        <item name="android:windowIsTranslucent">true</item>
+        
 <!--        <item name="android:windowBackground">#F9f9f9</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:editTextBackground">@android:color/white</item>-->

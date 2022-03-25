@@ -11,16 +11,16 @@ import com.example.floatview.R;
 /**
  * SingleInstance相关测试
  */
-public class SingleInstanceActivityC extends AppCompatActivity {
+public class SingleInstanceActivityD extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_instance_c);
+        setContentView(R.layout.activity_single_instance_d);
     }
     
-    public void onActivityD(View v) {
-        startActivity(new Intent(this, SingleInstanceActivityD.class));
+    public void onActivityE(View v) {
+//        startActivity(new Intent(this, SingleInstanceActivityD.class));
     }
     
 }
