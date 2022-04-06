@@ -52,7 +52,9 @@ https://blog.csdn.net/yaya_soft/article/details/38387789?utm_medium=distribute.p
 
 关于Activity退到后台再点击列表的主播进入直播间，可以考虑把当前的直播间结束了，再重新进入，看看是否可行
 
-# 
+# Service 使用例子
+
+
 
 # 出现问题
 1. C:\Users\Administrator\.gradle\caches\transforms-2\files-2.1\f243f87f287fb4f4052bd069a9b71980\core-1.7.0\res\values\values.xml:105:5-114:25: AAPT: error: resource android:attr/lStar not found.

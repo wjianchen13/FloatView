@@ -41,6 +41,11 @@
             android:launchMode="singleInstance"/>
         <activity android:name=".singleinstance.SingleInstanceActivityD" />
 
+        <activity android:name=".service.ServiceActivity" />
+        <activity android:name=".service.ServiceActivity2" />
+        <service android:name=".service.TestService" >
+        </service>
+
     </application>
 
 </manifest>

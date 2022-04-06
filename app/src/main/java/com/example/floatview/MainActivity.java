@@ -11,6 +11,7 @@ import com.example.floatview.drag.DragScaleActivity;
 import com.example.floatview.drag.ScaleActivity;
 import com.example.floatview.floatwindow.FloatActivity;
 import com.example.floatview.gesture.GestureActivity;
+import com.example.floatview.service.ServiceActivity;
 import com.example.floatview.sharedelement.SharedElementActivity1;
 import com.example.floatview.singleinstance.SingleInstanceActivityA;
 
@@ -52,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSingleInstance(View v) {
         startActivity(new Intent(this, SingleInstanceActivityA.class));
+    }
+
+    public void onService(View v) {
+        startActivity(new Intent(this, ServiceActivity.class));
     }
 
 }
