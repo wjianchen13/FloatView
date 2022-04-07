@@ -4,7 +4,8 @@
 
 
 # 悬浮窗显示
-
+1.直接添加View到WindowManager，这种方式缩放View的时候严重卡顿
+2.直接添加一个全屏的View到WindowManager，在全屏View里面添加控件，通过对控件的拖动和缩放达到目的
 
 
 # SharedElement
@@ -38,6 +39,7 @@ startActivity(i,optionsCompat.toBundle());
 但是需要解决跳转问题，比如大厅进入直播间再进入其他页面返回直播间，再返回大厅
 直播间直接跳转直播间，需要处理直播间的onNewIntent()方法
 这种方法问题太多，单单处理跳转逻辑都比较复杂，还有桌面启动，最近任务列表启动
+这种方案有问题，直播间内跳转直播间用的是同一个Activity
 
 2.考虑退出直播间重新连接直播间的socket，用于更新视频最新状态
 
@@ -127,8 +129,14 @@ https://blog.csdn.net/oYuDaBaJiao/article/details/99998985
 Android仿优酷视频的悬浮窗播放
 https://blog.csdn.net/why931022/article/details/107229849
 
+EasyFloat：Android悬浮窗框架
+https://github.com/princekin-f/EasyFloat
 
+悬浮窗显示在屏幕外 FLAG_LAYOUT_NO_LIMITS
+https://blog.csdn.net/u013034413/article/details/83506884
 
+Android 把APP从后台调到前台
+https://blog.csdn.net/lxd_love_lgc/article/details/112579667
 
 
 
