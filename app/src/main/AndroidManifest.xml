@@ -45,8 +45,8 @@
         <activity android:name=".service.ServiceActivity2" />
         <service android:name=".service.TestService" />
         <service android:name=".floatwindow.FloatService" />
-        
-        
+        <service android:name=".floatwindow1.FloatService1" />
+        <activity android:name=".floatwindow1.FloatActivity1" />
 
     </application>
 

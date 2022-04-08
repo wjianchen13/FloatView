@@ -115,7 +115,7 @@ https://blog.csdn.net/cnzx219/article/details/47157603
 Android启动模式之singleinstance的坑
 https://blog.csdn.net/Mr_JingFu/article/details/79077613
 
-github搜索Float Video
+github搜索Float Video         Float
 
 Activity启动模式、Intent Flags、taskAffinity、task和back stack总结
 https://blog.csdn.net/cui130/article/details/80687993?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-4.pc_relevant_default&spm=1001.2101.3001.4242.3&utm_relevant_index=7
@@ -138,5 +138,6 @@ https://blog.csdn.net/u013034413/article/details/83506884
 Android 把APP从后台调到前台
 https://blog.csdn.net/lxd_love_lgc/article/details/112579667
 
-
+Android 悬浮窗权限各机型各系统适配大全（总结）
+https://blog.csdn.net/cw2004100021124/article/details/78109816?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-12-78109816.pc_agg_new_rank&utm_term=android+%E6%82%AC%E6%B5%AE%E7%AA%97%E6%94%BE%E5%A4%A7%E7%BC%A9%E5%B0%8F&spm=1000.2123.3001.4430
 

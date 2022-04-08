@@ -1,8 +1,9 @@
-package com.example.floatview.floatwindow;
+package com.example.floatview.floatwindow1;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -10,16 +11,17 @@ import android.os.IBinder;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.floatview.R;
+import com.example.floatview.drag.DragScaleLayout;
 import com.example.floatview.utils.Utils;
 
 import java.util.Random;
@@ -29,7 +31,7 @@ import jnidemo.hlq.com.remoteview.Main2Activity;
 /**
  * 这种方式是直接添加一个又尺寸的View到WindowManager，缩放的时候卡顿，拖动没问题
  */
-public class FloatService extends Service implements FloatLayout.CallBack {
+public class FloatService1 extends Service /*implements FloatLayout1.CallBack*/ {
     
     private boolean isLog = true;
 
@@ -46,13 +48,13 @@ public class FloatService extends Service implements FloatLayout.CallBack {
     private WindowManager.LayoutParams wmParams;
     private LayoutInflater inflater;
     //浮动布局
-    private FloatLayout mFloatingLayout;
-    private LinearLayout linearLayout;
+    private FloatLayout1 mFloatingLayout;
+    private RelativeLayout rlytDrag;
     
     //client 可以通过Binder获取Service实例
     public class MyBinder extends Binder {
-        public FloatService getService() {
-            return FloatService.this;
+        public FloatService1 getService() {
+            return FloatService1.this;
         } 
     }
 
@@ -65,8 +67,8 @@ public class FloatService extends Service implements FloatLayout.CallBack {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            scale();
-            scaleTest();
+//            scale();
+//            scaleTest();
         }
     };
 
@@ -171,50 +173,51 @@ public class FloatService extends Service implements FloatLayout.CallBack {
         winManager.updateViewLayout(mFloatingLayout, wmParams);
     }
 
-    @Override
-    public void onDrag(int dx, int dy) {
-        wmParams.x = wmParams.x + dx;
-        wmParams.y = wmParams.y + dy;
-        Utils.log("onDrag wmParams.x: " + wmParams.x + "   wmParams.y: " + wmParams.y);
-        winManager.updateViewLayout(mFloatingLayout, wmParams);
-    }
-
-    @Override
-    public void onScale(float factor) {
-        int ow = wmParams.width;
-        int oh = wmParams.height;
-        int nw = (int)(ow * factor);
-        int nh = (int)(oh * factor);
-        Utils.log("onScale factor: " + factor + "   nw: " + nw + "   nh: " + nh);
-        int dw = nw - ow;
-        int dh = nh - oh;
-        wmParams.x = wmParams.x - dw / 2;
-        wmParams.y = wmParams.y - dh / 2;
-        wmParams.width = nw;
-        wmParams.height = nh;
-        winManager.updateViewLayout(mFloatingLayout, wmParams);
-//        mFloatingLayout.requestLayout();
-    }
+//    @Override
+//    public void onDrag(int dx, int dy) {
+//        wmParams.x = wmParams.x + dx;
+//        wmParams.y = wmParams.y + dy;
+//        Utils.log("onDrag wmParams.x: " + wmParams.x + "   wmParams.y: " + wmParams.y);
+//        winManager.updateViewLayout(mFloatingLayout, wmParams);
+//    }
+//
+//    @Override
+//    public void onScale(float factor) {
+//        int ow = wmParams.width;
+//        int oh = wmParams.height;
+//        int nw = (int)(ow * factor);
+//        int nh = (int)(oh * factor);
+//        Utils.log("onScale factor: " + factor + "   nw: " + nw + "   nh: " + nh);
+//        int dw = nw - ow;
+//        int dh = nh - oh;
+////        wmParams.x = wmParams.x - dw / 2;
+////        wmParams.y = wmParams.y - dh / 2;
+//        wmParams.width = nw;
+//        wmParams.height = nh;
+//        winManager.updateViewLayout(mFloatingLayout, wmParams);
+//    }
 
     /**
      * 初始化窗口
      */
     private void initWindow() {
         winManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
+
         //设置好悬浮窗的参数
         wmParams = getParams();
+        wmParams.format = PixelFormat.RGBA_8888;
         // 悬浮窗默认显示以左上角为起始坐标
         wmParams.gravity = Gravity.LEFT | Gravity.TOP;
         //悬浮窗的开始位置，因为设置的是从左上角开始，所以屏幕左上角是x=0;y=0
-        wmParams.x = getX(winManager.getDefaultDisplay().getWidth());
-        wmParams.y = getY(210);
+        wmParams.x = 0;
+        wmParams.y = 0;
         //得到容器，通过这个inflater来获得悬浮窗控件
         inflater = LayoutInflater.from(getApplicationContext());
         // 获取浮动窗口视图所在布局
-        mFloatingLayout = (FloatLayout) inflater.inflate(R.layout.view_float, null);
+        mFloatingLayout = (FloatLayout1) inflater.inflate(R.layout.view_float1, null);
         // 添加悬浮窗的视图
         winManager.addView(mFloatingLayout, wmParams);
-        mFloatingLayout.setCallBack(this);
+//        mFloatingLayout.setCallBack(this);
     }
 
     private WindowManager.LayoutParams getParams() {
@@ -228,14 +231,12 @@ public class FloatService extends Service implements FloatLayout.CallBack {
         //设置可以显示在状态栏上
         wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams. FLAG_LAYOUT_NO_LIMITS 
+        /*| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE*/;
 
         //设置悬浮窗口长宽数据
-//        wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-//        wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        wmParams.width = mWidth;
-        wmParams.height = mHeight;
+        wmParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wmParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         
         return wmParams;
     }
@@ -262,16 +263,16 @@ public class FloatService extends Service implements FloatLayout.CallBack {
      * 悬浮窗点击事件
      */
     private void initFloating() {
-        linearLayout = mFloatingLayout.findViewById(R.id.line1);
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FloatService.this, Main2Activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
-
+        rlytDrag = mFloatingLayout.findViewById(R.id.rlyt_drag);
+//        linearLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(FloatService1.this, Main2Activity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+//            }
+//        });
+        mFloatingLayout.setVideoview(rlytDrag);
 //        mFloatingLayout.setOnTouchListener(new View.OnTouchListener() {
 //            private int dX;
 //            private int dY;

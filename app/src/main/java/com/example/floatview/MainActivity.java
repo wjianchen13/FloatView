@@ -10,6 +10,7 @@ import com.example.floatview.background.BackgroundActivity;
 import com.example.floatview.drag.DragScaleActivity;
 import com.example.floatview.drag.ScaleActivity;
 import com.example.floatview.floatwindow.FloatActivity;
+import com.example.floatview.floatwindow1.FloatActivity1;
 import com.example.floatview.gesture.GestureActivity;
 import com.example.floatview.service.ServiceActivity;
 import com.example.floatview.sharedelement.SharedElementActivity1;
@@ -29,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onFloat(View v) {
         startActivity(new Intent(this, FloatActivity.class));
+    }
+
+    public void onFloat1(View v) {
+        startActivity(new Intent(this, FloatActivity1.class));
     }
 
     public void onDrag(View v) {
